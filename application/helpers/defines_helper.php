@@ -25,7 +25,7 @@ class RESP_MSG_SIGN
     CONST ERR_MISSING_PARAMS = "Lütfen Tüm Alanları Eksiksiz Doldurun";
     CONST ERR_USING_EMAIL = "Bu E-posta Adresi Kullanılmaktadır";
     CONST ERR_UNKNOWN = "Bir Hata Meydana Geldi...";
-
+    CONST ERR_LINK= "Bu Bağlantı Artık Kullanılmamaktadır.";
     CONST ERR_FORGOTTEN_EMAIL_INVALID = "Geçersiz Mail Adresi";
 
 }

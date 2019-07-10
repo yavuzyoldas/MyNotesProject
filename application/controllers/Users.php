@@ -76,30 +76,32 @@ class Users extends CI_Controller{
          $this->db->where("activationcode",$code);
          $query = $this->db->get("tbl_users_temp");
          $user = $query->result_array();
+         if( $user != null){
 
-            $data = array(
-            "password"       =>  $user[0]["password"],
-            "surname"        =>  $user[0]["surname"],
-            "name"           =>  $user[0]["name"],
-            "email"          =>  $user[0]["email"],
-            "type"           =>  $user[0]["type"],
-            "id"             =>  $user[0]["id"]
-            );
-        if($data["id"] == "" || $data["type"] == "" || $data["email"] == "" || $data["name"] == "" || $data["surname"] == "" || $data["password"] == ""){
-            generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_SIGN::ERR_MISSING_PARAMS);
-            return;
-        }
-        if($this->User_model -> getUser($data)){
-            generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_USER::ERR_USER_ADDED);
-            return;
-        }
 
-        if($this -> User_model -> insertUser($data)){
-            $this->User_model  -> deleteUserTemp($data);
-            generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER::OK);
-            return;
-        }else
-            generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_USER::ERR_UNKNOWN);
+             $data = array(
+                 "password"       =>  $user[0]["password"],
+                 "surname"        =>  $user[0]["surname"],
+                 "name"           =>  $user[0]["name"],
+                 "email"          =>  $user[0]["email"],
+                 "type"           =>  $user[0]["type"],
+                 "id"             =>  $user[0]["id"]
+             );
+             if($data["id"] == "" || $data["type"] == "" || $data["email"] == "" || $data["name"] == "" || $data["surname"] == "" || $data["password"] == ""){
+                 generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_SIGN::ERR_MISSING_PARAMS);
+                 return;
+             }
+
+             if($this -> User_model -> insertUser($data)){
+                 $this->User_model  -> deleteUserTemp($data);
+                 generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER::OK);
+                 return;
+             }else
+                 generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_USER::ERR_UNKNOWN);
+         }else{
+                 generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_SIGN::ERR_LINK);
+         }
+
 
     }
 

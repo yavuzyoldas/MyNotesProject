@@ -28,7 +28,7 @@ class Email_model extends CI_Model
         );
 
 
-        $message = "MyNotes uygulamasını kullanabilmek için lütfen bağlantıya tıklayınız." ;
+        $message = "MyNotes uygulamasını kullanabilmek için lütfen bağlantıya tıklayınız.(Bu bağlantı yanlızca 1 kez kulanılabilir.)" ;
         $link = "http://localhost/mynotes/Users/insert?k=";
         $activation_message = $message." "."</br>"." ".$link.$activation_code;
         $this->load->library("email");
