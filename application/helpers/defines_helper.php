@@ -60,6 +60,7 @@ class RESP_MSG_USER
     CONST OK_DELETE = "Kullanıcı Başarıyla Silinmiştir";
     CONST ERR_UNKNOWN = "Bir Hata Meydana Geldi...";
     CONST ERR_INVALID_VALUE = "Geçersiz Değer";
+    CONST ERR_USER_ADDED = "Bu Kullanıcı Zaten Kayıtlıdır.";
 
 }
 class RESP_MSG_USER_BLOCKED
