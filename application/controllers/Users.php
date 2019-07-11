@@ -8,12 +8,28 @@ class Users extends CI_Controller{
         parent :: __construct();
         $this->load->model("User_model");//Kullanılacak modeli sürekli her yazdığımız fonksiyon içerisinde çağırmamak için kurucuda dahil ettik.
         $this->load->model("Email_model");
+
+
     }
 
     public function index()
     {
 
     }
+
+    public function test()
+    {
+        $this->load->library("JWT");
+        $token = $this->jwt->generate_token(1);
+
+        echo $token;
+        echo "<br>";
+
+        print_r($this->jwt->decode_token($token));
+
+
+    }
+
 
     public function get()
     {
@@ -30,6 +46,7 @@ class Users extends CI_Controller{
         $data = array(
              "activationcode" =>  md5(uniqid().rand(0,999999)),
              "password"       =>  trim($this->input->post("password")),
+             "password1"      =>  trim($this->input->post("password1")),
              "surname"        =>  trim($this->input->post("surname")),
              "name"           =>  trim($this->input->post("name")),
              "email"          =>  trim($this->input->post("email")),
@@ -37,7 +54,7 @@ class Users extends CI_Controller{
              "id"             =>  uniqid()
         );
 
-        if($data["password"] == '' || $data["surname"] == '' || $data["name"] == '' || $data["email"] == '' ||  $data["type"] == '' ||  $data["activationcode"] == '' ){
+        if($data["password1"] == '' || $data["password"] == '' || $data["surname"] == '' || $data["name"] == '' || $data["email"] == '' ||  $data["type"] == '' ||  $data["activationcode"] == '' ){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_MISSING_PARAMS);
             return;
         }
@@ -50,6 +67,16 @@ class Users extends CI_Controller{
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_SHORT);
             return;
         }
+        if($data["password"] != $data["password1"]){
+            generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_MATCH);
+            return;
+        }
+
+
+        unset($data["password1"]);
+        // passwor kontrolü yapılıktan sonra password1 alanına gerek kalmıyor.
+        //Ayrıca $data dizisi insert metoduna doğrudan verildiği için tabloda yanlızca password diye colon olduğu için password1 in silinmesi gerekiyor.
+
 
         $data["password"] =md5($data["password"]);
 

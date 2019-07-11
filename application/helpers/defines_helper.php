@@ -18,6 +18,7 @@ class RESP_MSG_SIGN
     CONST OK = "Kayıt Başarılı. Giriş Yapabilirsiniz...";
     CONST OK_TEMP = "Lütfen Mail Adresinize Gönderilen Linke Tıklayınız...";
     CONST OK_DELETE = "Kullanıcı Başarıyla Kaldırılmıştır.";
+    CONST OK_LOGIN = "Giriş İşleminiz Başarı İle Gerçekleşti.";
     CONST ERR_INVALID_EMAIL = "Geçersiz E-posta Adresi";
     CONST ERR_INVALID_VALUE = "Geçersiz E-posta Adresi Veya Şifre";
     CONST ERR_PASSWORD_MATCH = "Girilen Parolalar Eşleşmiyor";
@@ -29,6 +30,7 @@ class RESP_MSG_SIGN
     CONST ERR_FORGOTTEN_EMAIL_INVALID = "Geçersiz Mail Adresi";
 
 }
+
 
 class RESP_MSG_PROFILE
 {
@@ -49,7 +51,7 @@ class RESP_MSG_NOTE
     CONST OK_DELETE = "Notunuz Başarıyla Silinmiştir";
     CONST ERR_UNKNOWN = "Bir Hata Meydana Geldi...";
     CONST ERR_INVALID_VALUE = "Geçersiz Değer";
-
+    CONST PERMISSION_DENIED = "Yetkisiz Erişim";
 }
 class RESP_MSG_USER
 {
@@ -79,7 +81,7 @@ class RESP_MSG_FORGOT
 {
 
     CONST OK = "Şifreniz Başarı İle Değiştirilmiştir";
-    CONST SENDED_MAIL = "Lütfen Mail Adresinize Gönderilen Linke Tıklayınız";
+    CONST SENDED_MAIL = "Şifrenizi Değiştirmek İçin Lütfen Mail Adresinize Gönderilen Linke Tıklayınız";
     CONST ERR_WAIT = "Tekrar Mail Almak için Lütfen Daha Sonrar Tekrar Deneyin";
     CONST ERR_PARAMETER = "Parametre Hatası";
     CONST ERR_UNKNOWN = "Bir Hata Meydana Geldi...";

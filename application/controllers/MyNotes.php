@@ -4,10 +4,22 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class MyNotes extends CI_Controller {
 
 
+    private $userId = null;
+
     public function __construct()
     {
         parent::__construct();                  //Kurucu sınıfta  kalıtım alınan CI_Controller ın  kurucusunu çağırdık.
         $this->load->model("MyNotes_model");//Kullanılacak modeli sürekli her yazdığımız fonksiyon içerisinde çağırmamak için kurucuda dahil ettik.
+
+        $token = trim($this->input->post("token"));
+        if(!$token){
+            generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_NOTE::PERMISSION_DENIED);
+        }
+
+        $this->userId = $this->jwt->isLogin($token);
+        if(!$this->userId){
+            generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_NOTE::PERMISSION_DENIED);
+        }
 
     }
 
@@ -47,8 +59,6 @@ class MyNotes extends CI_Controller {
 
     }
 
-
-
     public function update(){
 
         $data = array(
@@ -83,8 +93,5 @@ class MyNotes extends CI_Controller {
             generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_NOTE::ERR_UNKNOWN);
 
     }
-
-
-
 
 }

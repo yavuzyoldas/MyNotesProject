@@ -1,4 +1,3 @@
-<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
 <?php
 function json_encode_tr($string)
 {
