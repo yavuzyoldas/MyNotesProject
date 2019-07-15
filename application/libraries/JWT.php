@@ -5,13 +5,13 @@ class JWT{
 
     public function generate_token($user_id){
 
-
         $data = array(
             'userId'=>$user_id,
             'login'=>time(),
             'logout'=> time() + 60*1,
             'issuedAt'=>date(DATE_ISO8601, strtotime("now"))
         );
+
 
         return  ($this->urlsafeB64Encode($this->jsonEncode($data)));
     }

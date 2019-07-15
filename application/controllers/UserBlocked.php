@@ -16,11 +16,23 @@ class UserBlocked extends CI_Controller
     }
     public function get()
     {
+
         $response = $this->UserBlocked_model->getAllUserBlocked();
         if($response)
             generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER_BLOCKED::OK_LIST ,$response);
         else
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_USER_BLOCKED::ERR_UNKNOWN );
+    }
+
+    public function getByUserId(){
+
+        $response = $this->UserBlocked_model->getUserBlocked();
+        if($response)
+            generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER_BLOCKED::OK_LIST ,$response);
+        else
+            generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_USER_BLOCKED::ERR_UNKNOWN );
+
+
     }
 
     public function insert()

@@ -1,8 +1,9 @@
 <?php
 class MyNotes_model extends CI_Model {
 
-    public function getAllNotes() // Kullanıcı id sine srgu yazılıp değiştirilcek. Yanlızca başlıklara göre çekilecek. İçerik için ayrı fonkisyon yazılack.
+    public function getAllNotesForUser($userId)
     {
+        $this->db->where("userid",$userId);
         $query = $this->db->get('tbl_notes');
         return $query->result_array();
     }

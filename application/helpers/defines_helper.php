@@ -23,6 +23,7 @@ class RESP_MSG_SIGN
     CONST ERR_INVALID_VALUE = "Geçersiz E-posta Adresi Veya Şifre";
     CONST ERR_PASSWORD_MATCH = "Girilen Parolalar Eşleşmiyor";
     CONST ERR_PASSWORD_SHORT = "Parola 6 Karakterden Fazla Olmalıdır";
+    CONST ERR_PASSWORD_WRONG = "Hatalı Parola Girdiniz";
     CONST ERR_MISSING_PARAMS = "Lütfen Tüm Alanları Eksiksiz Doldurun";
     CONST ERR_USING_EMAIL = "Bu E-posta Adresi Kullanılmaktadır";
     CONST ERR_UNKNOWN = "Bir Hata Meydana Geldi...";
@@ -69,6 +70,8 @@ class RESP_MSG_USER_BLOCKED
 {
 
     CONST OK = "Kullanıcı Engellenenler Listesine Eklenmiştir.";
+    CONST OK_BLOCKED = "5 Kez Hatalı Giriş Yaptığınız İçin Belirli Bir Süre Giriş Yapamayacaksınız.";
+    CONST OK_BLOCKED_TIME = "1 Dakika Boyunca Giriş Yapamayacaksınız.";
     CONST OK_LIST = "Engellenen Kullanıcılar Başarıyla Listelenmiştir.";
     CONST OK_UPDATE = "Engellenen Kullanıcı Başarıyla Güncellenmiştir";
     CONST OK_DELETE = "Engellenen Kullanıcı Başarıyla Silinmiştir";

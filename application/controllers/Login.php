@@ -6,24 +6,65 @@ class Login extends CI_Controller
         parent::__construct();
         $this->load->model("Login_model");
         $this->load->model("Email_model");
-       // $this->load->library("JWT");
+        $this -> load->model("UserBlocked_model");
     }
     public function index()
     {
         $email      = (trim($this->input->post("email")));
         $password   = md5(trim($this->input->post("password")));
+
+        if($email == " " || $password == " "){
+            generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_MISSING_PARAMS);
+            return;
+        }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_EMAIL);
             return;
         }
         // Login Başarılı
-        if($this->login_model->login($email,$password)){
+        if($this->Login_model->login($email,$password)){
             $this->load->library("jwt");
-            $token = $this->jwt->generate_token($this->login_model->getUserId($email));
+            $token = $this->jwt->generate_token($this->Login_model->getUserId($email));
+            $userid =$this->Login_model->getUserId($email);
+
+           if($this -> UserBlocked_model -> getUserBlocked($userid)){
+               if(time() < $this->UserBlocked_model->getTimeForUserBlocked($email)){
+                   generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER_BLOCKED::OK_BLOCKED_TIME);
+                   return;
+               }
+
+           }
             generateResponse(RESPONSE_CODE::OK,RESP_MSG_SIGN::OK_LOGIN,$data = null,$token);
             return;
         }
         else{
+            if($userid = $this -> UserBlocked_model -> searchUserWithEmail($email)){
+                echo $userid;
+                if($this->UserBlocked_model-> getUserBlocked($userid) == true){
+                    echo "var";
+                      if(is_array( $data = $this->UserBlocked_model -> userBlockedCount($userid))){
+                          $data["time"] += 60;
+                          $data["count"] = 0;
+                          $this -> UserBlocked_model -> updateUserBlocked($data);
+                          generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_USER_BLOCKED::OK_BLOCKED);
+                      }else{
+                          generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_WRONG);
+                      }
+                }else{
+                    echo "yok";
+                    $data = array(
+                        "id"      => uniqid(),
+                        "userid"  => $userid,
+                        "count"   => 1,
+                        "time" =>  time()
+                    );
+                    $this -> UserBlocked_model ->  insertUserBlocked($data);
+                }
+                generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_WRONG);
+            }else{
+
+                generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_EMAIL);
+            }
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_VALUE);
             return;
         }
@@ -36,11 +77,10 @@ class Login extends CI_Controller
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_EMAIL);
             return;
         }
-       $response = $this->Login_model->forgotPassword($email);
+        $response = $this->Login_model->forgotPassword($email);
         if($response > 0){
 
-            $this->Login_model->getKValue($email);
-            exit;
+            $k =  $this->Login_model->getKValue($email);
             $result = $this->Email_model->sendEmailForForgotEmail($email,$k);
             generateResponse(RESPONSE_CODE::BAD_REQUEST, $result == true ? RESP_MSG_FORGOT::SENDED_MAIL : RESP_MSG_FORGOT::ERR_WAIT );
             return;
@@ -68,7 +108,7 @@ class Login extends CI_Controller
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_MATCH);
             return;
         }
-        switch($this->login_model->changeForgottenPassword($k,md5($password1))){
+        switch($this->Login_model->changeForgottenPassword($k,md5($password1))){
             case -1:
                 generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_FORGOT::ERR_PARAMETER);
                 return;

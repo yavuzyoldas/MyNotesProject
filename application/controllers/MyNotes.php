@@ -25,13 +25,15 @@ class MyNotes extends CI_Controller {
 
     public function index()
     {
+        print_r($this->userId);
         $this->load->library("MyLog");
         $this->mylog->addLog();
     }
 
     public function get()
     {
-         $response = $this->MyNotes_model->getAllNotes();
+
+         $response = $this->MyNotes_model->getAllNotesForUser($this->userId);
         if($response)
             generateResponse(RESPONSE_CODE::OK,RESP_MSG_NOTE::OK_LIST ,$response);
         else
@@ -42,7 +44,7 @@ class MyNotes extends CI_Controller {
     {
         $data = array(
             "id"      => uniqid(),
-            "userid"  => trim($this->input->post("userid")),
+            "userid"  => $this->userId,
             "title"   => trim($this->input->post("title")),
             "content" => trim($this->input->post("content"))
         );

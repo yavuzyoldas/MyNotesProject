@@ -14,13 +14,6 @@ class Login_model extends CI_Model
     }
 
     public function getUserId($email){
-        /*$this->db->where("email",$email);
-        $result = $this->db->get('tbl_admins');
-        if($result->num_rows() == 1)
-            return $result->first_row()->id;
-        else
-            return false;*/
-
         $this -> db -> where("email",$email);
         $result = $this -> db -> get("tbl_users");
         if($result->num_rows()){
@@ -37,16 +30,13 @@ class Login_model extends CI_Model
             $this->db->where("email",$email);
             $result = $this->db->get("tbl_forgotten_password");
             if($result->num_rows() > 0 )
-                if($result->last_row()->date + FORGOT_REMAIL_TIME > time() )
+                if($result->last_row()->date)
                     return 2;
                    $k = md5(time()."_+".$email);
             $data = array(
                 "email" => $email,
                 "k"     => $k
             );
-
-
-
             return $this->db->insert("tbl_forgotten_password",$data) ? 1 : -1;
         }else{
             return -1;
@@ -64,7 +54,7 @@ class Login_model extends CI_Model
         $result = $result->last_row();
         $this->db->where("email",$result->email);
         $this->db->set("password",$password);
-        $result = $this->db->update("tbl_user");
+        $result = $this->db->update("tbl_users");
 
         //forgotten tablosundaki kayıt temizlenir
         $this->db->where("k",$k);
@@ -75,15 +65,9 @@ class Login_model extends CI_Model
     public function getKValue($email){
 
         $this ->db ->where("email",$email);
-
         $result = $this-> db -> get("tbl_forgotten_password");
-
-        $data =  $result->result_array();
-
-
-        print_r($data);
-        echo   $data[0]["k"];
-        return $data[0]["k"];
+        $data =  $result->last_row();
+        return $data->k;
     }
 
 
