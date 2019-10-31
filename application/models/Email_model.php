@@ -28,8 +28,8 @@ class Email_model extends CI_Model
     public function sendToActivationEmail($activation_code,$email){
 
         $message = "MyNotes uygulamasını kullanabilmek için lütfen bağlantıya tıklayınız.(Bu bağlantı yanlızca 1 kez kulanılabilir.)" ;
-        $link = "http://localhost/mynotes/Users/insert?k=";
-        $activation_message = $message." "."</br>"." ".$link.$activation_code;
+        $link = "http://192.168.43.176/mynotes/Users/insert?k=";
+        $activation_message = $message." "."</br>"." "."<label name=\"DeepLink\">".$link.$activation_code."</label>";
         $this->load->library("email");
         $this->email->initialize($this->config);
 
@@ -53,7 +53,7 @@ class Email_model extends CI_Model
     public function sendEmailForForgotEmail($email,$k){
 
         $message = "MyNotes : Bağlantıya tıklayarak şifre güncelleme ekranına yönleceksiniz. " ;
-        $link = "http://localhost/mynotes/Login/changeForgottenPassword?k=";
+        $link = "http://192.168.43.176/mynotes/Login/changeForgottenPassword?k=";
         $activation_message = $message." "."</br>"." ".$link. $k;;
         $this->load->library("email");
         $this->email->initialize($this->config);
@@ -71,7 +71,6 @@ class Email_model extends CI_Model
         return $this -> email -> send();
 
         echo $this -> email ->print_debugger();
-
 
     }
 

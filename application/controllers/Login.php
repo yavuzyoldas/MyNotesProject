@@ -4,6 +4,7 @@ class Login extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model("User_model");
         $this->load->model("Login_model");
         $this->load->model("Email_model");
         $this -> load->model("UserBlocked_model");
@@ -32,7 +33,6 @@ class Login extends CI_Controller
                    generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER_BLOCKED::OK_BLOCKED_TIME);
                    return;
                }
-
            }
             generateResponse(RESPONSE_CODE::OK,RESP_MSG_SIGN::OK_LOGIN,$data = null,$token);
             return;
@@ -69,20 +69,51 @@ class Login extends CI_Controller
             return;
         }
     }
+    public function facebookLogin(){
+
+        $email = (trim($this->input -> post("email")));
+        $id = (trim($this->input -> post("id")));
+        $name = (trim($this->input -> post("name")));
+        $surname = (trim($this->input -> post("surname")));
+        $type = (trim($this->input -> post("type")));
+
+        if($this->User_model->isUserInsert($email)){
+            $this->load->library("jwt");
+            $token = $this->jwt->generate_token($this->Login_model->getUserId($email));
+            generateResponse(RESPONSE_CODE::OK,RESP_MSG_SIGN::OK_LOGIN,$data = null,$token);
+            return;
+        }else{
+            $data = array(
+                "id" => $id,
+                "type" => $type,
+                "email" => $email,
+                "name" => $name,
+                "surname" => $surname,
+                "password" => md5($id)
+            );
+            if($this -> User_model -> insertUser($data)){
+                $this->load->library("jwt");
+                $token = $this->jwt->generate_token($this->Login_model->getUserId($email));
+                generateResponse(RESPONSE_CODE::OK,RESP_MSG_SIGN::OK_LOGIN,$data = null,$token);
+                return;
+            }else{
+                generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_SIGN::ERR_UNKNOWN);
+                return;
+            }
+        }
+    }
     public function forgotPassword()
     {
         $email = (trim($this->input->post("email")));
-
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_EMAIL);
             return;
         }
         $response = $this->Login_model->forgotPassword($email);
         if($response > 0){
-
             $k =  $this->Login_model->getKValue($email);
             $result = $this->Email_model->sendEmailForForgotEmail($email,$k);
-            generateResponse(RESPONSE_CODE::BAD_REQUEST, $result == true ? RESP_MSG_FORGOT::SENDED_MAIL : RESP_MSG_FORGOT::ERR_WAIT );
+            generateResponse(RESPONSE_CODE::OK, $result == true ? RESP_MSG_FORGOT::SENDED_MAIL : RESP_MSG_FORGOT::ERR_WAIT );
             return;
         }
         else{
@@ -90,7 +121,6 @@ class Login extends CI_Controller
             return;
         }
     }
-
     public function changeForgottenPassword(){
         $k = trim($this->input->post("k"));
         $password1 = (trim($this->input->post("password1")));

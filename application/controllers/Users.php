@@ -53,12 +53,10 @@ class Users extends CI_Controller{
              "type"           =>  trim($this->input->post("type")),
              "id"             =>  uniqid()
         );
-
         if($data["password1"] == '' || $data["password"] == '' || $data["surname"] == '' || $data["name"] == '' || $data["email"] == '' ||  $data["type"] == '' ||  $data["activationcode"] == '' ){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_MISSING_PARAMS);
             return;
         }
-
         if (!filter_var($data["email"], FILTER_VALIDATE_EMAIL)) {
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_INVALID_EMAIL);
             return;
@@ -71,34 +69,25 @@ class Users extends CI_Controller{
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_PASSWORD_MATCH);
             return;
         }
-
-
         unset($data["password1"]);
-        // passwor kontrolü yapılıktan sonra password1 alanına gerek kalmıyor.
+        // password kontrolü yapılıktan sonra password1 alanına gerek kalmıyor.
         //Ayrıca $data dizisi insert metoduna doğrudan verildiği için tabloda yanlızca password diye colon olduğu için password1 in silinmesi gerekiyor.
-
-
         $data["password"] =md5($data["password"]);
-
-
         if($this->Email_model->isValidEmail($data["email"]) == false){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_SIGN::ERR_USING_EMAIL);
             return;
         }
-
-
         $response = $this->User_model->insertUserTemp($data);
         if($response && $this -> Email_model -> sendToActivationEmail($data["activationcode"],$data["email"])){
             generateResponse(RESPONSE_CODE::OK,RESP_MSG_SIGN::OK_TEMP);
         }else{
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_USER::ERR_UNKNOWN );
         }
-
     }
 
     public function insert(){
 
-        $code = $this->input->get("k");
+        $code = $this->input->post("k");
 
          $this->db->where("activationcode",$code);
          $query = $this->db->get("tbl_users_temp");
@@ -121,7 +110,7 @@ class Users extends CI_Controller{
 
              if($this -> User_model -> insertUser($data)){
                  $this->User_model  -> deleteUserTemp($data);
-                 generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER::OK);
+                 generateResponse(RESPONSE_CODE::OK,RESP_MSG_USER::OK,$data["email"]);
                  return;
              }else
                  generateResponse(RESPONSE_CODE::BAD_REQUEST,RESP_MSG_USER::ERR_UNKNOWN);

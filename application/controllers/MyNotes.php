@@ -5,18 +5,19 @@ class MyNotes extends CI_Controller {
 
 
     private $userId = null;
+    private $token = null;
 
     public function __construct()
     {
-        parent::__construct();                  //Kurucu sınıfta  kalıtım alınan CI_Controller ın  kurucusunu çağırdık.
+        parent::__construct();                      //Kurucu sınıfta  kalıtım alınan CI_Controller ın  kurucusunu çağırdık.
         $this->load->model("MyNotes_model");//Kullanılacak modeli sürekli her yazdığımız fonksiyon içerisinde çağırmamak için kurucuda dahil ettik.
 
-        $token = trim($this->input->post("token"));
-        if(!$token){
+        $this->token = trim($this->input->post("token"));
+        if(!$this->token){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_NOTE::PERMISSION_DENIED);
         }
 
-        $this->userId = $this->jwt->isLogin($token);
+        $this->userId = $this->jwt->isLogin($this->token);
         if(!$this->userId){
             generateResponse(RESPONSE_CODE::BAD_REQUEST, RESP_MSG_NOTE::PERMISSION_DENIED);
         }

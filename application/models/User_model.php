@@ -4,11 +4,6 @@
 class User_model extends CI_Model
 {
 
-
-
-
-
-
     public function getAllUsers()
     {
         $query = $this->db->get('tbl_users');
@@ -18,6 +13,18 @@ class User_model extends CI_Model
     public function getUser($data){
         $this->db->where("id",$data["id"]);
         return $this ->db->get("tbl_users");
+    }
+    public function isUserInsert($email){
+
+        $this->db->where("email",$email);
+        $this->db->where("type",2);
+        $this ->db -> select("id,type,email");
+        $result = $this ->db->get("tbl_users");
+        if($result ->num_rows() > 0)
+            return true;
+        else
+            return false;
+
     }
 
 
